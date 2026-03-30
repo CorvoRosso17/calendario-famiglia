@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Scadenze 2026 — Famiglia Gullì</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     DATI — modifica questa sezione per aggiornare le scadenze
+     Ogni evento ha: date, title, cat, who, note, amount
+     cat: vedi CATS sotto | who: carlo/lei/giulia/marta/comune
+     amount: 0 se da inserire o se adempimento senza pagamento
+     fixed: true = non eliminabile dall'app
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+const EVENTS = [
+  // ── CARLO ──────────────────────────────────────────────────────
+  {id:1,  date:'2026-03-31', title:'Quota Ordine Ingegneri',                    cat:'Ordine',       who:'carlo',  note:'Quota annuale OO.II. Catanzaro — verificare avviso annuale',                                         amount:0,   fixed:true},
+  {id:2,  date:'2026-06-01', title:'Bollo fatture — 1° trimestre',              cat:'Bollo',        who:'carlo',  note:'Fatture esenti/fuori IVA >€77,47. F24 cod.2521. Se tot.<€5.000 slittabile al 30/09',               amount:0,   fixed:true},
+  {id:3,  date:'2026-06-16', title:'Acconto IMU 2026',                          cat:'IMU',          who:'comune', note:'50% imposta — 2ª casa, terreni, immobili produttivi. Aliquote anno precedente',                    amount:0,   fixed:true},
+  {id:4,  date:'2026-06-30', title:'Saldo imp. sostitutiva 2025 + 1° acc.',     cat:'Fiscale',      who:'carlo',  note:'Saldo 2025 + 40% acconto 2026 — F24 cod.1790/1792',                                               amount:0,   fixed:true},
+  {id:5,  date:'2026-06-30', title:'Saldo INPS 2025 + 1° acconto 2026',         cat:'INPS',         who:'carlo',  note:'Gestione separata — stesse scadenze imp. sostitutiva',                                             amount:0,   fixed:true},
+  {id:6,  date:'2026-06-30', title:'Inarcassa — 1ª rata',                       cat:'Inarcassa',    who:'carlo',  note:'50% contributo minimo soggettivo + integrativo + maternità',                                       amount:0,   fixed:true},
+  {id:7,  date:'2026-06-30', title:'Cedolare secca — saldo 2025 + 1° acc.',     cat:'Cedolare',     who:'comune', note:'Saldo 2025 + 40% acconto 2026 — F24 cod.1840/1842',                                               amount:0,   fixed:true},
+  {id:8,  date:'2026-07-30', title:'Versamento imposte con magg. +0,4%',        cat:'Fiscale',      who:'carlo',  note:'Proroga alternativa al 30/06 per imp. sostitutiva + INPS + cedolare',                             amount:0,   fixed:true},
+  {id:9,  date:'2026-09-30', title:'Bollo fatture — 2° trimestre',              cat:'Bollo',        who:'carlo',  note:'F24 cod.2522. Se I+II <€5.000 cumulabile al 30/11',                                               amount:0,   fixed:true},
+  {id:10, date:'2026-09-30', title:'Inarcassa — 2ª rata',                       cat:'Inarcassa',    who:'carlo',  note:'50% contributo minimo soggettivo + integrativo + maternità',                                       amount:0,   fixed:true},
+  {id:11, date:'2026-10-31', title:'Modello Redditi PF 2025',                   cat:'Fiscale',      who:'carlo',  note:'Trasmissione telematica dichiarazione a.i. 2025',                                                  amount:0,   fixed:true},
+  {id:12, date:'2026-10-31', title:'Dichiarazione reddituale Inarcassa 2025',   cat:'Inarcassa',    who:'carlo',  note:'Invio telematico reddito e volume affari — Inarcassa Online',                                      amount:0,   fixed:true},
+  {id:13, date:'2026-11-30', title:'2° acconto imp. sostitutiva 2026',          cat:'Fiscale',      who:'carlo',  note:'60% acconto — non rateizzabile — F24 cod.1791',                                                   amount:0,   fixed:true},
+  {id:14, date:'2026-11-30', title:'2° acconto INPS 2026',                      cat:'INPS',         who:'carlo',  note:'Seconda rata — non rateizzabile',                                                                  amount:0,   fixed:true},
+  {id:15, date:'2026-11-30', title:'Bollo fatture — 3° trimestre',              cat:'Bollo',        who:'carlo',  note:'F24 cod.2523. Eventuale cumulo I+II+III se sotto soglia €5.000',                                  amount:0,   fixed:true},
+  {id:16, date:'2026-11-30', title:'Cedolare secca — 2° acconto 2026',          cat:'Cedolare',     who:'comune', note:'60% acconto — non rateizzabile — F24 cod.1841',                                                   amount:0,   fixed:true},
+  {id:17, date:'2026-12-16', title:'Saldo IMU 2026',                            cat:'IMU',          who:'comune', note:'Conguaglio saldo — aliquote comunali 2026 deliberate',                                             amount:0,   fixed:true},
+  {id:18, date:'2026-12-31', title:'Conguaglio Inarcassa 2025',                 cat:'Inarcassa',    who:'carlo',  note:'Se dovuto e non rateizzato — PagoPA o F24. Fonte: inarcassa.it',                                  amount:0,   fixed:true},
+  // ── MOGLIE ─────────────────────────────────────────────────────
+  {id:20, date:'2026-03-31', title:'Quota Ordine Farmacisti',                   cat:'Ordine',       who:'lei',    note:'Quota annuale Ordine provinciale — verificare avviso',                                             amount:0,   fixed:true},
+  {id:21, date:'2026-03-31', title:'ENPAF — 1ª rata',                           cat:'ENPAF',        who:'lei',    note:'Dipendente: contributo solidarietà 3% = €204 tot. in 3 rate da €68. PagoPA o App IO',              amount:68,  fixed:true},
+  {id:22, date:'2026-04-30', title:'ENPAF — 2ª rata',                           cat:'ENPAF',        who:'lei',    note:'Seconda rata — €68',                                                                               amount:68,  fixed:true},
+  {id:23, date:'2026-09-30', title:'ENPAF — 3ª rata',                           cat:'ENPAF',        who:'lei',    note:'Terza e ultima rata — €68',                                                                        amount:68,  fixed:true},
+  // ── GIULIA (Unical Lettere, 1°→2° anno) ────────────────────────
+  {id:30, date:'2026-05-31', title:'Unical — 4ª rata a.a. 2025/26',             cat:'Università',   who:'giulia', note:'1/3 CA. Non dovuta se laureata entro 30/04. Importo dipende da ISEE. Fonte: Allegato 1 Unical',   amount:0,   fixed:true},
+  {id:31, date:'2026-09-30', title:'Unical — 1ª rata a.a. 2026/27',             cat:'Università',   who:'giulia', note:'Bollo €16 + assicurazione €2,75 = €18,75 fissi. Iscrizione in corso entro 30/09',                amount:19,  fixed:true},
+  {id:32, date:'2026-12-01', title:'Unical — 2ª rata a.a. 2026/27',             cat:'Università',   who:'giulia', note:'TDSU (€130-160 per ISEE) + 1/3 CA — inserire importo quando arriva avviso PagoPA',               amount:0,   fixed:true},
+  // ── MARTA (Liceo Fermi Catanzaro, 3° anno) ─────────────────────
+  {id:40, date:'2026-09-30', title:'Fermi — Contributo volontario a.s. 2026/27',cat:'Scuola',       who:'marta',  note:'Importo deliberato dal C.d.I. — verificare su Pago in Rete a settembre',                         amount:0,   fixed:true},
+  // ── ADEMPIMENTI AMMINISTRATIVI ─────────────────────────────────
+  {id:50, date:'2026-10-15', title:'Iscrizione albo scrutatori — Giulia',       cat:'Adempimento',  who:'giulia', note:'Domanda al Comune di residenza entro ottobre. Requisiti: maggiore età, diploma, non dip. pubblico. Va rinnovata ogni anno', amount:0, fixed:true},
+  {id:51, date:'2026-10-15', title:'ISEE-Università 2026 per Giulia',            cat:'Adempimento',  who:'giulia', note:'Richiedere INPS o CAF entro metà ottobre per evitare mora €50. Determina importo 2ª e 3ª rata Unical', amount:0, fixed:true},
+];
+</script>
+
+<style>
+:root {
+  --font: 'Outfit', system-ui, sans-serif;
+  --bg:      #f5f4f0;
+  --surface: #ffffff;
+  --border:  #e8e6e0;
+  --text:    #1a1916;
+  --muted:   #7a7870;
+  --subtle:  #c2bfb6;
+  --radius:  12px;
+  --radius-sm: 8px;
+  --shadow:  0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+  --soon-bg: #fff8ed;
+  --soon-b:  #e8a020;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ── HEADER ── */
+.app-header {
+  background: var(--text);
+  color: #fff;
+  padding: 20px 16px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.app-header h1 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -.2px;
+}
+.app-header p {
+  font-size: 12px;
+  opacity: .55;
+  margin-top: 2px;
+}
+.header-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 12px;
+  gap: 8px;
+}
+.summary-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.spill {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.spill b { font-weight: 600; }
+.print-btn {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 11px;
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── FILTERS ── */
+.filters-wrap {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+  position: sticky;
+  top: 91px;
+  z-index: 90;
+}
+.filter-row {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-row + .filter-row { margin-top: 6px; }
+.pill {
+  flex-shrink: 0;
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid;
+  transition: opacity .15s, transform .1s;
+  user-select: none;
+}
+.pill.off { opacity: .22; }
+.pill:active { transform: scale(.95); }
+.filter-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+/* ── NAV ── */
+.month-nav {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px 8px;
+  gap: 8px;
+}
+.nav-btn {
+  width: 36px; height: 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text);
+  flex-shrink: 0;
+  transition: background .1s;
+}
+.nav-btn:active { background: var(--bg); }
+.month-label {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text);
+}
+.all-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .1s;
+}
+.all-btn:active { background: var(--bg); }
+
+/* ── ALERT SCADENZE ── */
+.soon-box {
+  margin: 0 14px 4px;
+  background: var(--soon-bg);
+  border: 1px solid #f0c060;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+}
+.soon-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: #a06010;
+  margin-bottom: 6px;
+}
+.soon-item {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  color: #7a4800;
+  padding: 2px 0;
+  align-items: baseline;
+}
+.soon-d { font-weight: 600; min-width: 34px; flex-shrink: 0; }
+
+/* ── EVENT LIST ── */
+.list-wrap { padding: 4px 14px 80px; }
+
+.ev-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border-left: 4px solid;
+  box-shadow: var(--shadow);
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: transform .1s;
+}
+.ev-card:active { transform: scale(.99); }
+.ev-card.past { opacity: .38; }
+.ev-card.adempimento { border-left-style: dashed; }
+
+.ev-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 12px;
+}
+.ev-date {
+  min-width: 38px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.ev-day { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.2; }
+.ev-wd  { font-size: 10px; color: var(--muted); }
+
+.ev-body { flex: 1; min-width: 0; }
+.ev-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.35;
+}
+.ev-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+.ev-note {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+  line-height: 1.45;
+}
+
+.ev-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.ev-amount {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.ev-amount.pending {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--subtle);
+  font-style: italic;
+}
+.badge-soon {
+  background: var(--soon-bg);
+  border: 1px solid #f0c060;
+  color: #a06010;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+/* ── EMPTY ── */
+.empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--subtle);
+  font-size: 14px;
+}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  z-index: 100;
+}
+.bnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 6px 0;
+  border: none;
+  background: none;
+  font-family: var(--font);
+  transition: opacity .1s;
+}
+.bnav-item .icon { font-size: 20px; }
+.bnav-item .label { font-size: 10px; font-weight: 500; color: var(--muted); }
+.bnav-item.active .label { color: var(--text); font-weight: 600; }
+.bnav-item.active .icon { opacity: 1; }
+.bnav-item:not(.active) .icon { opacity: .4; }
+
+/* ── YEAR VIEW ── */
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 8px 14px 80px;
+}
+.month-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  border: 1.5px solid transparent;
+  transition: border-color .15s, transform .1s;
+}
+.month-card.cur { border-color: var(--text); }
+.month-card:active { transform: scale(.98); }
+.mc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.mc-name { font-size: 13px; font-weight: 600; }
+.mc-count { font-size: 11px; color: var(--muted); }
+.mc-dots { display: flex; flex-direction: column; gap: 3px; }
+.mc-dot-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+}
+.mc-dot-row .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mc-dot-row span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mc-none { font-size: 11px; color: var(--subtle); }
+
+/* ── INFO VIEW ── */
+.info-wrap { padding: 14px 14px 80px; }
+.info-section { margin-bottom: 20px; }
+.info-section h3 { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+.info-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+  margin-bottom: 8px;
+}
+.info-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.info-row:last-child { border-bottom: none; }
+.info-row .key { font-size: 13px; color: var(--muted); }
+.info-row .val { font-size: 13px; font-weight: 600; text-align: right; }
+.legend-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-label { font-size: 13px; }
+
+/* ── PRINT ── */
+@media print {
+  .bottom-nav, .filters-wrap, .month-nav, .app-header .print-btn { display: none !important; }
+  .app-header { position: static; background: #fff; color: #000; border-bottom: 2px solid #000; }
+  .app-header h1 { color: #000; }
+  .app-header p { color: #555; opacity: 1; }
+  .spill { background: #eee; border-color: #ccc; color: #000; }
+  body { background: #fff; }
+  .list-wrap { padding-bottom: 0; }
+  .year-grid, .info-wrap { display: none; }
+}
+
+@media (min-width: 480px) {
+  .year-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 700px) {
+  .year-grid { grid-template-columns: repeat(4, 1fr); }
+  .app-header, .filters-wrap, .month-nav, .list-wrap, .year-grid, .info-wrap { max-width: 680px; margin-left: auto; margin-right: auto; }
+  .bottom-nav { max-width: 680px; left: 50%; transform: translateX(-50%); border-radius: var(--radius) var(--radius) 0 0; border: 1px solid var(--border); border-bottom: none; }
+  .soon-box { margin-left: auto; margin-right: auto; max-width: 652px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <h1>Scadenze &amp; Adempimenti 2026</h1>
+  <p>Famiglia Gull&igrave; &middot; date verificate</p>
+  <div class="header-meta">
+    <div class="summary-pills" id="summary-pills"></div>
+    <button class="print-btn" onclick="window.print()">&#128438; Stampa</button>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters-wrap">
+  <div class="filter-label">Chi</div>
+  <div class="filter-row" id="who-row"></div>
+  <div class="filter-label" style="margin-top:8px">Categoria</div>
+  <div class="filter-row" id="cat-row"></div>
+</div>
+
+<!-- MONTH VIEW -->
+<div id="view-month">
+  <div class="month-nav">
+    <button class="nav-btn" onclick="chM(-1)">&#8592;</button>
+    <div class="month-label" id="month-label"></div>
+    <button class="nav-btn" onclick="chM(1)">&#8594;</button>
+    <button class="all-btn" onclick="doAll()">Tutto l&#39;anno</button>
+  </div>
+  <div id="soon-area"></div>
+  <div class="list-wrap" id="ev-list"></div>
+</div>
+
+<!-- YEAR VIEW -->
+<div id="view-year" style="display:none">
+  <div class="year-grid" id="year-grid"></div>
+</div>
+
+<!-- INFO VIEW -->
+<div id="view-info" style="display:none">
+  <div class="info-wrap">
+    <div class="info-section">
+      <h3>Riepilogo</h3>
+      <div class="info-card" id="info-totals"></div>
+    </div>
+    <div class="info-section">
+      <h3>Legenda categorie</h3>
+      <div class="info-card" id="info-legend"></div>
+    </div>
+    <div class="info-section">
+      <h3>Note</h3>
+      <div class="info-card">
+        <div class="info-row"><span class="key">Bordo tratteggiato</span><span class="val">Adempimento (nessun pagamento)</span></div>
+        <div class="info-row"><span class="key">Scheda attenuata</span><span class="val">Scadenza già passata</span></div>
+        <div class="info-row"><span class="key">Badge arancione</span><span class="val">Scade nei prossimi 14 giorni</span></div>
+        <div class="info-row"><span class="key">Importi Unical</span><span class="val">Dipendono dall&apos;ISEE — da aggiornare</span></div>
+        <div class="info-row"><span class="key">Ultimo aggiornamento</span><span class="val">Marzo 2026</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bnav-item active" id="bnav-month" onclick="setView('month')">
+    <span class="icon">&#128197;</span>
+    <span class="label">Mese</span>
+  </button>
+  <button class="bnav-item" id="bnav-year" onclick="setView('year')">
+    <span class="icon">&#128336;</span>
+    <span class="label">Anno</span>
+  </button>
+  <button class="bnav-item" id="bnav-info" onclick="setView('info')">
+    <span class="icon">&#8505;&#65039;</span>
+    <span class="label">Info</span>
+  </button>
+</nav>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────
+const CATS = {
+  'Adempimento': {b:'#378ADD', bg:'#EBF3FC', t:'#0C457A'},
+  'Fiscale':     {b:'#C47A10', bg:'#FEF3E0', t:'#6B4200'},
+  'IMU':         {b:'#1868B0', bg:'#E5F0FC', t:'#0A3D70'},
+  'Inarcassa':   {b:'#5242C0', bg:'#EDEAFF', t:'#2E2480'},
+  'Ordine':      {b:'#0D6B4E', bg:'#E0F5EE', t:'#064832'},
+  'INPS':        {b:'#A03010', bg:'#FDEEE8', t:'#6B1E08'},
+  'ENPAF':       {b:'#9E2856', bg:'#FCE8F0', t:'#6B1438'},
+  'Cedolare':    {b:'#3A7010', bg:'#EAF5DE', t:'#224008'},
+  'Bollo':       {b:'#5A5850', bg:'#F0EEE8', t:'#3A3830'},
+  'Università':  {b:'#0F9070', bg:'#E0F4EE', t:'#065840'},
+  'Scuola':      {b:'#4A7A10', bg:'#EBF5DA', t:'#2A4808'},
+  'Altro':       {b:'#888070', bg:'#F0EEE8', t:'#504840'},
+};
+const WHO = {
+  carlo:  {label:'Carlo',  bg:'#E5F0FC', b:'#1868B0', t:'#0A3D70'},
+  lei:    {label:'Moglie', bg:'#FCE8F0', b:'#9E2856', t:'#6B1438'},
+  giulia: {label:'Giulia', bg:'#EDEAFF', b:'#5242C0', t:'#2E2480'},
+  marta:  {label:'Marta',  bg:'#EBF5DA', b:'#4A7A10', t:'#2A4808'},
+  comune: {label:'Comune', bg:'#F0EEE8', b:'#5A5850', t:'#3A3830'},
+};
+const MN = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+const WD = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+
+// ── STATE ────────────────────────────────────────────────────────
+let curM     = new Date().getMonth();
+let showAll  = false;
+let curView  = 'month';
+let whoAct   = new Set(Object.keys(WHO));
+let catAct   = new Set(Object.keys(CATS));
+let evs      = JSON.parse(JSON.stringify(EVENTS)); // working copy
+
+// ── UTILS ────────────────────────────────────────────────────────
+function today()      { return new Date().toISOString().split('T')[0]; }
+function daysUntil(s) { return Math.round((new Date(s) - new Date(today())) / 86400000); }
+function fmtD(s)      { const d=new Date(s); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); }
+function fmtAmt(a)    { return '€\u202f' + a.toLocaleString('it-IT'); }
+function esc(s)       { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+// ── NAVIGATION ───────────────────────────────────────────────────
+function chM(d) { showAll=false; curM=(curM+d+12)%12; render(); }
+function doAll(){ showAll=true;  render(); }
+
+function setView(v) {
+  curView = v;
+  ['month','year','info'].forEach(n => {
+    document.getElementById('view-'+n).style.display = n===v ? 'block' : 'none';
+    document.getElementById('bnav-'+n).classList.toggle('active', n===v);
+  });
+  render();
+}
+
+function showMonthView(m) { curM=m; showAll=false; setView('month'); }
+
+// ── FILTERS ──────────────────────────────────────────────────────
+function togWho(w) {
+  if (whoAct.has(w) && whoAct.size > 1) whoAct.delete(w);
+  else whoAct.add(w);
+  render();
+}
+function togCat(c) {
+  if (catAct.has(c) && catAct.size > 1) catAct.delete(c);
+  else catAct.add(c);
+  render();
+}
+
+function renderFilters() {
+  // WHO
+  document.getElementById('who-row').innerHTML =
+    Object.entries(WHO).map(([k,v]) =>
+      `<span class="pill${whoAct.has(k)?'':' off'}" style="background:${v.bg};border-color:${v.b};color:${v.t}" onclick="togWho('${k}')">${v.label}</span>`
+    ).join('');
+  // CAT
+  document.getElementById('cat-row').innerHTML =
+    Object.entries(CATS).map(([c,v]) =>
+      `<span class="pill${catAct.has(c)?'':' off'}" style="background:${v.bg};border-color:${v.b};color:${v.t}" onclick="togCat('${c}')">${c}</span>`
+    ).join('');
+}
+
+// ── HEADER SUMMARY ───────────────────────────────────────────────
+function renderSummary() {
+  const t    = today();
+  const vis  = evs.filter(e => whoAct.has(e.who) && catAct.has(e.cat) && e.cat !== 'Adempimento');
+  const upc  = vis.filter(e => e.date >= t);
+  const admp = evs.filter(e => whoAct.has(e.who) && catAct.has(e.cat) && e.cat==='Adempimento' && e.date>=t).length;
+  const totA = vis.reduce((s,e)=>s+e.amount,0);
+  const upcA = upc.reduce((s,e)=>s+e.amount,0);
+  document.getElementById('summary-pills').innerHTML =
+    `<span class="spill"><b>${upc.length}</b> pagamenti</span>` +
+    (upcA > 0 ? `<span class="spill"><b>${fmtAmt(upcA)}</b> da pagare</span>` : '') +
+    (admp > 0 ? `<span class="spill"><b>${admp}</b> adempimenti</span>` : '');
+}
+
+// ── SOON ALERT ───────────────────────────────────────────────────
+function renderSoon() {
+  const t    = today();
+  const soon = evs
+    .filter(e => e.date >= t && daysUntil(e.date) <= 14 && whoAct.has(e.who) && catAct.has(e.cat))
+    .sort((a,b) => a.date.localeCompare(b.date));
+  const el = document.getElementById('soon-area');
+  if (!soon.length) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="soon-box">
+    <div class="soon-title">&#9888; Scadenze nei prossimi 14 giorni</div>
+    ${soon.map(e => {
+      const days = daysUntil(e.date);
+      const dlabel = days===0?'oggi':days===1?'domani':days+'gg';
+      return `<div class="soon-item">
+        <span class="soon-d">${fmtD(e.date)}</span>
+        <span>${esc(e.title)} <em style="opacity:.6">(${WHO[e.who]?.label||e.who})</em> — ${dlabel}${e.amount>0?' · <b>'+fmtAmt(e.amount)+'</b>':''}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ── MONTH VIEW ───────────────────────────────────────────────────
+function renderMonth() {
+  const t  = today();
+  const ml = document.getElementById('month-label');
+  const el = document.getElementById('ev-list');
+  ml.textContent = showAll ? 'Anno 2026' : MN[curM] + ' 2026';
+
+  let list = evs.filter(e => catAct.has(e.cat) && whoAct.has(e.who));
+  if (!showAll) list = list.filter(e => new Date(e.date).getMonth() === curM);
+
+  // sort: payments first (by date), then adempimenti
+  list.sort((a,b) => {
+    const aA = a.cat==='Adempimento', bA = b.cat==='Adempimento';
+    if (aA !== bA) return aA ? 1 : -1;
+    return a.date.localeCompare(b.date);
+  });
+
+  if (!list.length) {
+    el.innerHTML = '<div class="empty">Nessuna scadenza per questo periodo.</div>';
+    return;
+  }
+
+  el.innerHTML = list.map(e => {
+    const c       = CATS[e.cat] || CATS['Altro'];
+    const w       = WHO[e.who]  || {label:e.who, bg:'#eee', t:'#555'};
+    const past    = e.date < t;
+    const days    = daysUntil(e.date);
+    const isSoon  = !past && days <= 14;
+    const isAdmp  = e.cat === 'Adempimento';
+    const d       = new Date(e.date);
+
+    const amtHtml = isAdmp
+      ? '<span class="ev-amount pending">adempimento</span>'
+      : e.amount > 0
+        ? `<span class="ev-amount">${fmtAmt(e.amount)}</span>`
+        : '<span class="ev-amount pending">da inserire</span>';
+
+    const soonBadge = isSoon
+      ? `<span class="badge-soon">${days===0?'oggi':days===1?'domani':days+'gg'}</span>`
+      : '';
+
+    return `<div class="ev-card${past?' past':''}${isAdmp?' adempimento':''}" style="border-left-color:${c.b}">
+      <div class="ev-inner">
+        <div class="ev-date">
+          <div class="ev-day">${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}</div>
+          <div class="ev-wd">${WD[d.getDay()]}</div>
+        </div>
+        <div class="ev-body">
+          <div class="ev-title">${esc(e.title)} ${soonBadge}</div>
+          <div class="ev-tags">
+            <span class="tag" style="background:${c.bg};color:${c.t}">${e.cat}</span>
+            <span class="tag" style="background:${w.bg};color:${w.t}">${w.label}</span>
+          </div>
+          ${e.note ? `<div class="ev-note">${esc(e.note)}</div>` : ''}
+        </div>
+        <div class="ev-right">${amtHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── YEAR VIEW ────────────────────────────────────────────────────
+function renderYear() {
+  const t  = today();
+  const cm = new Date().getMonth();
+  const el = document.getElementById('year-grid');
+  el.innerHTML = MN.map((mn, mi) => {
+    const items = evs
+      .filter(e => new Date(e.date).getMonth()===mi && whoAct.has(e.who) && catAct.has(e.cat))
+      .sort((a,b) => a.date.localeCompare(b.date));
+    const cnt = items.length;
+    const dotsHtml = cnt
+      ? items.slice(0,4).map(e => {
+          const c = CATS[e.cat]||CATS['Altro'];
+          return `<div class="mc-dot-row${e.date<t?' past':''}">
+            <div class="dot" style="background:${e.cat==='Adempimento'?'transparent':'${c.b}'};${e.cat==='Adempimento'?'border:1.5px dashed '+c.b:'background:'+c.b}"></div>
+            <span>${String(new Date(e.date).getDate()).padStart(2,'0')} ${esc(e.title)}</span>
+          </div>`;
+        }).join('') + (cnt>4 ? `<div class="mc-none">+ altri ${cnt-4}</div>` : '')
+      : '<div class="mc-none">—</div>';
+    return `<div class="month-card${mi===cm?' cur':''}" onclick="showMonthView(${mi})">
+      <div class="mc-head">
+        <span class="mc-name">${mn}</span>
+        <span class="mc-count">${cnt}</span>
+      </div>
+      <div class="mc-dots">${dotsHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── INFO VIEW ────────────────────────────────────────────────────
+function renderInfo() {
+  const t   = today();
+  const vis = evs.filter(e => e.cat!=='Adempimento');
+  const tA  = vis.reduce((s,e)=>s+e.amount,0);
+  const uA  = vis.filter(e=>e.date>=t).reduce((s,e)=>s+e.amount,0);
+  const admp= evs.filter(e=>e.cat==='Adempimento').length;
+
+  document.getElementById('info-totals').innerHTML = [
+    ['Scadenze di pagamento', vis.length],
+    ['Adempimenti amministrativi', admp],
+    ['Totale importi inseriti', tA>0?fmtAmt(tA):'— (da compilare)'],
+    ['Ancora da pagare', uA>0?fmtAmt(uA):'— (da compilare)'],
+  ].map(([k,v]) => `<div class="info-row"><span class="key">${k}</span><span class="val">${v}</span></div>`).join('');
+
+  document.getElementById('info-legend').innerHTML =
+    Object.entries(CATS).map(([c,v]) =>
+      `<div class="legend-item">
+        <div class="legend-dot" style="background:${v.b}"></div>
+        <span class="legend-label">${c}</span>
+      </div>`
+    ).join('');
+}
+
+// ── MASTER RENDER ────────────────────────────────────────────────
+function render() {
+  renderFilters();
+  renderSummary();
+  if (curView === 'month') { renderSoon(); renderMonth(); }
+  else if (curView === 'year') renderYear();
+  else renderInfo();
+}
+
+render();
+</script>
+</body>
+</html>
